@@ -33,10 +33,10 @@ namespace pd_api
 
             services.AddIdentity<AppUser, AppRole>(options =>
             {
-
+                options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,7 +50,7 @@ namespace pd_api
 
             app.UseEndpoints(endpoints =>
             {
-                
+                endpoints.MapDefaultControllerRoute();
             });
 
             app.UseAuthentication();
