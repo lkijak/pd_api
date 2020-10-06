@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace pd_api.Models.Account
 {
-    public class Registration
+    public class EditAccount
     {
         [Required]
         public string UserName { get; set; }
@@ -14,13 +14,10 @@ namespace pd_api.Models.Account
         [Required]
         public string Password { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [Compare("Email")]
-        public string ConfirmEmail { get; set; }
-
+        public string Name { get; set; }
+        public string Lastname { get; set; }
+        public string PostCode { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
     }
 }

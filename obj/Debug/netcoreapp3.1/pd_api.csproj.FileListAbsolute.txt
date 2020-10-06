@@ -44,9 +44,6 @@ D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.csproj.CopyComplete
 D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\staticwebassets\pd_api.StaticWebAssets.Manifest.cache
 D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\staticwebassets\pd_api.StaticWebAssets.xml
 D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.genruntimeconfig.cache
-D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.csproj.CoreCompileInputs.cache
-D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.MvcApplicationPartsAssemblyInfo.cs
-D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.MvcApplicationPartsAssemblyInfo.cache
 D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\pd_api.pdb
 D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\Microsoft.Data.SqlClient.dll
 D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
@@ -71,3 +68,7 @@ D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard
 D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.dll
 D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.pdb
 D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+D:\Projekt Dyplomowy\pd_api\bin\Debug\netcoreapp3.1\AutoMapper.dll
+D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.csproj.CoreCompileInputs.cache
+D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.MvcApplicationPartsAssemblyInfo.cs
+D:\Projekt Dyplomowy\pd_api\obj\Debug\netcoreapp3.1\pd_api.MvcApplicationPartsAssemblyInfo.cache

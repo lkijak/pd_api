@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using pd_api.Models;
 using pd_api.Models.Account;
 using pd_api.Models.Errors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
@@ -33,6 +31,30 @@ namespace pd_api.Controllers.AccountControllers
             passwordHasher = passwordHash;
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetUserAccount([FromBody] string userName)
+        {
+            if (!string.IsNullOrEmpty(userName))
+            {
+                AppUser user = await userManager.FindByNameAsync(userName);
+                if (user != null)
+                {
+                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, ShowUserAccount>());
+                    var mapper = new Mapper(config);
+                    ShowUserAccount showAccount = mapper.Map<ShowUserAccount>(user);
+                    return Json(showAccount);
+                }
+                else
+                {
+                    return Json(new RequestError(false, "Could not find user."));
+                }
+            }
+            else
+            {
+                return Json(new RequestError(false, "Didn't pass the username"));
+            }
+        }
+
         [HttpPost]
         public async Task<JsonResult> CreateAccount([FromBody] Registration registrationData)
         {
@@ -47,7 +69,8 @@ namespace pd_api.Controllers.AccountControllers
                 IdentityResult createResult = await userManager.CreateAsync(user, registrationData.Password);
                 if (createResult.Succeeded)
                 {
-                    //tutaj dodać metodę do wysyłania email potwierdzającego adres
+                    //tutaj dodać metodę do wysyłania email potwierdzającego adres 
+                    //i  ustawić potwierdzenie adresu w setup
 
                     return Json(createResult);
                 }
@@ -60,9 +83,46 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPatch]
-        public async Task<JsonResult> EditAccount([FromBody] Registration registrationData)
+        public async Task<JsonResult> EditAccount([FromBody] EditAccount editAccountData)
         {
-            return Json("OK");
+            if (ModelState.IsValid)
+            {
+                AppUser user = await userManager.FindByNameAsync(editAccountData.UserName);
+                if (user != null)
+                {
+                    if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, editAccountData.Password) ==
+                        PasswordVerificationResult.Failed)
+                    {
+                        return Json(new RequestError(false, "Wrong password."));
+                    }
+                    else
+                    {
+                        user.Name = editAccountData.Name;
+                        user.Lastname = editAccountData.Lastname;
+                        user.PostCode = editAccountData.PostCode;
+                        user.City = editAccountData.City;
+                        user.Address = editAccountData.Address;
+
+                        IdentityResult editResult = await userManager.UpdateAsync(user);
+                        if (editResult.Succeeded)
+                        {
+                            return Json(editResult);
+                        }
+                        else
+                        {
+                            return Json(editResult);
+                        }
+                    }
+                }
+                else
+                {
+                    return Json(new RequestError(false, "Could not find user."));
+                }
+            }
+            else
+            {
+                return Json(ModelState);
+            }
         }
 
         [HttpDelete]
