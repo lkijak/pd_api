@@ -18,10 +18,17 @@ namespace pd_api.Models.Errors
         public RequestError(bool succeeded, string description)
         {
             Succeeded = succeeded;
-            Errors = new ErrorsList[]
+            if (description != null)
             {
-                new ErrorsList(null, description)
-            };
+                Errors = new ErrorsList[]
+                {
+                    new ErrorsList(null, description)
+                };
+            }
+            else
+            {
+                Errors = new ErrorsList[0];
+            }
         }
     }
 
