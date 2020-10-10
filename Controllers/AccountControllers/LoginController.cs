@@ -2,10 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using pd_api.Models;
 using pd_api.Models.Account;
-using pd_api.Models.Errors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
@@ -26,7 +22,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Login([FromBody] Login loginData)
+        public async Task<JsonResult> Login([FromBody] LoginModel loginData)
         {
             if (ModelState.IsValid)
             {
@@ -48,12 +44,12 @@ namespace pd_api.Controllers.AccountControllers
                     }
                     else
                     {
-                        return Json(new RequestError(false, "User email is not confirmed."));
+                        return Json(new { succeeded = false, messageInfo = "Email address is not confirmed." });
                     }
                 }
                 else
                 {
-                    return Json(new RequestError(false, "Could not find user."));
+                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
                 }
             }
             else
@@ -66,7 +62,7 @@ namespace pd_api.Controllers.AccountControllers
         public async Task<JsonResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return Json(new RequestError(true, null));
+            return Json(new { succeeded = true });
         }
     }
 }

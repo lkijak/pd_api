@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using pd_api.Models;
 using pd_api.Models.Account;
-using pd_api.Models.Errors;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
@@ -39,24 +38,24 @@ namespace pd_api.Controllers.AccountControllers
                 AppUser user = await userManager.FindByNameAsync(userName);
                 if (user != null)
                 {
-                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, ShowUserAccount>());
+                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, ShowUserAccountModel>());
                     var mapper = new Mapper(config);
-                    ShowUserAccount showAccount = mapper.Map<ShowUserAccount>(user);
+                    ShowUserAccountModel showAccount = mapper.Map<ShowUserAccountModel>(user);
                     return Json(showAccount);
                 }
                 else
                 {
-                    return Json(new RequestError(false, "Could not find user."));
+                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
                 }
             }
             else
             {
-                return Json(new RequestError(false, "Didn't pass the username"));
+                return Json(new { succeeded = false, messageInfo = "Didn't pass the username" });
             }
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateAccount([FromBody] Registration registrationData)
+        public async Task<JsonResult> CreateAccount([FromBody] RegistrationModel registrationData)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +82,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPatch]
-        public async Task<JsonResult> EditAccount([FromBody] EditAccount editAccountData)
+        public async Task<JsonResult> EditAccount([FromBody] EditAccountModel editAccountData)
         {
             if (ModelState.IsValid)
             {
@@ -93,7 +92,7 @@ namespace pd_api.Controllers.AccountControllers
                     if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, editAccountData.Password) ==
                         PasswordVerificationResult.Failed)
                     {
-                        return Json(new RequestError(false, "Wrong password."));
+                        return Json(new { succeeded = false, messageInfo = "Wrong password." });
                     }
                     else
                     {
@@ -116,7 +115,7 @@ namespace pd_api.Controllers.AccountControllers
                 }
                 else
                 {
-                    return Json(new RequestError(false, "Could not find user."));
+                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
                 }
             }
             else
@@ -126,7 +125,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpDelete]
-        public async Task<JsonResult> DeleteAccount([FromBody] Login deleteData)
+        public async Task<JsonResult> DeleteAccount([FromBody] LoginModel deleteData)
         {
             if (ModelState.IsValid)
             {
@@ -136,7 +135,7 @@ namespace pd_api.Controllers.AccountControllers
                     if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, deleteData.Password) ==
                         PasswordVerificationResult.Failed)
                     {
-                        return Json(new RequestError(false, "Wrong password."));
+                        return Json(new { succeeded = false, messageInfo = "Wrong password." });
                     }
                     else
                     {
@@ -151,7 +150,7 @@ namespace pd_api.Controllers.AccountControllers
                         }
                     }
                 }
-                return Json(new RequestError(false, "Could not find user."));
+                return Json(new { succeeded = false, messageInfo = "Could not find user." });
             }
             else
             {

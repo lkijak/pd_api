@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace pd_api.Models.Account
 {
-    public class Login
+    public class LoginModel
     {
         [Required]
         public string UserName { get; set; }

@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using pd_api.Models;
 using pd_api.Models.User;
+using pd_api.Models.Email;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Internal;
 
 namespace pd_api.Service
 {
@@ -14,5 +16,7 @@ namespace pd_api.Service
             : base(options)
         {
         }
+
+        public DbSet<EmailConfigurationModel> EmailConfigurations { get; set; }
     }
 }
