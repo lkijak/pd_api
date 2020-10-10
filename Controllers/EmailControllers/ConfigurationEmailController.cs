@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using pd_api.Models.Email;
 using pd_api.Service;
@@ -12,15 +13,19 @@ namespace pd_api.Controllers.EmailControllers
     public class ConfigurationEmailController : Controller
     {
         private AppDbContext context;
+        private readonly ILogger logger;
 
-        public ConfigurationEmailController(AppDbContext ctx)
+        public ConfigurationEmailController(AppDbContext ctx,
+            ILogger<ConfigurationEmailController> log)
         {
             context = ctx;
+            logger = log;
         }
 
         [HttpGet("GetConfiguration")]
         public JsonResult GetConfiguration()
         {
+            logger.LogInformation("GET Controller called");
             try
             {
                 EmailConfigurationModel model = context.EmailConfigurations.First();
@@ -28,6 +33,7 @@ namespace pd_api.Controllers.EmailControllers
             }
             catch (Exception ex)
             {
+                logger.LogError("Log from GetConfiguration().", ex);
                 return Json(new { succeeded = false, messageInfo = ex.ToString() });
             }
         }

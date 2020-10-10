@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using pd_api.Models;
 using pd_api.Models.User;
 using pd_api.Service;
@@ -40,16 +41,16 @@ namespace pd_api
 
             services.AddSwaggerGen(info =>
             {
-                info.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                info.SwaggerDoc("v1.0", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
                     Title = "SMART Evolution API",
-                    Version = "v1",
+                    Version = "v1.0",
                     Description = "Aplikacja stworzona w ramach projektu dyplomowego"
                 });
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -57,22 +58,22 @@ namespace pd_api
             }
 
             app.UseSwagger();
-
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SMART Evolution");
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "SMART Evolution");
 
                 c.RoutePrefix = string.Empty;
             });
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
             });
 
             app.UseAuthentication();
+
+            loggerFactory.AddFile("Logs/smart-evolution-{Date}.txt");
         }
     }
 }
