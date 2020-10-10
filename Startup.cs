@@ -37,6 +37,16 @@ namespace pd_api
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
             services.AddControllers();
+
+            services.AddSwaggerGen(info =>
+            {
+                info.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "SMART Evolution API",
+                    Version = "v1",
+                    Description = "Aplikacja stworzona w ramach projektu dyplomowego"
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,6 +55,15 @@ namespace pd_api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SMART Evolution");
+
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 

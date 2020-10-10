@@ -21,7 +21,7 @@ namespace pd_api.Controllers.AccountControllers
             userManager = userMgr;
         }
 
-        [HttpPost]
+        [HttpPost("Login")]
         public async Task<JsonResult> Login([FromBody] LoginModel loginData)
         {
             if (ModelState.IsValid)
@@ -58,7 +58,7 @@ namespace pd_api.Controllers.AccountControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Logout")]
         public async Task<JsonResult> Logout()
         {
             await signInManager.SignOutAsync();

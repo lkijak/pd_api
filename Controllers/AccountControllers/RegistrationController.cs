@@ -30,7 +30,7 @@ namespace pd_api.Controllers.AccountControllers
             passwordHasher = passwordHash;
         }
 
-        [HttpGet]
+        [HttpGet("GetUserAccount")]
         public async Task<JsonResult> GetUserAccount([FromBody] string userName)
         {
             if (!string.IsNullOrEmpty(userName))
@@ -54,7 +54,7 @@ namespace pd_api.Controllers.AccountControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("CreateAccount")]
         public async Task<JsonResult> CreateAccount([FromBody] RegistrationModel registrationData)
         {
             if (ModelState.IsValid)
@@ -81,7 +81,7 @@ namespace pd_api.Controllers.AccountControllers
             return Json(ModelState);
         }
 
-        [HttpPatch]
+        [HttpPatch("EditAccount")]
         public async Task<JsonResult> EditAccount([FromBody] EditAccountModel editAccountData)
         {
             if (ModelState.IsValid)
@@ -124,7 +124,7 @@ namespace pd_api.Controllers.AccountControllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteAccount")]
         public async Task<JsonResult> DeleteAccount([FromBody] LoginModel deleteData)
         {
             if (ModelState.IsValid)

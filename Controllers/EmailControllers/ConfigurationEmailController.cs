@@ -18,7 +18,7 @@ namespace pd_api.Controllers.EmailControllers
             context = ctx;
         }
 
-        [HttpGet]
+        [HttpGet("GetConfiguration")]
         public JsonResult GetConfiguration()
         {
             try
@@ -32,7 +32,7 @@ namespace pd_api.Controllers.EmailControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("SetConfiguration")]
         public async Task<JsonResult> SetConfiguration([FromBody] EmailConfigurationModel configurationData)
         {
             if (ModelState.IsValid)
