@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using pd_api.Models.Email;
 using pd_api.Service;
 using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.EmailControllers
@@ -35,8 +32,12 @@ namespace pd_api.Controllers.EmailControllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SetConfiguration([FromBody] EmailConfigurationModel configurationData)
+        public async Task<JsonResult> CreateConfiguration([FromBody] EmailConfigurationModel configurationData)
         {
+            if (context.EmailConfigurations == null)
+            {
+                return Json(new { succeeded = false, messageInfo = "The configuration record already exists." });
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -54,6 +55,33 @@ namespace pd_api.Controllers.EmailControllers
             {
                 return Json(ModelState);
             }
+        }
+
+        [HttpPatch]
+        public async Task<JsonResult> EditConfiguration([FromBody] EmailConfigurationModel configurationData)
+        {
+            EmailConfigurationModel emeilConfig = context.EmailConfigurations.FirstOrDefault();
+            if (emeilConfig != null)
+            {
+                emeilConfig.FriendlyName = configurationData.FriendlyName;
+                emeilConfig.Login = configurationData.Login;
+                emeilConfig.Password = configurationData.Password;
+                emeilConfig.UseDefaultCredential = configurationData.UseDefaultCredential;
+                emeilConfig.Host = configurationData.Host;
+                emeilConfig.Port = configurationData.Port;
+                emeilConfig.EnableSSL = configurationData.EnableSSL;
+                emeilConfig.DefaultMessageBody = configurationData.DefaultMessageBody;
+                try
+                {
+                    context.EmailConfigurations.Update(emeilConfig);
+                    return Json(new { succeeded = true });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { exception = ex.ToString() });
+                }
+            }
+            return Json(new { succeeded = false, messageInfo = "Could not find email configuration." });
         }
     }
 }
