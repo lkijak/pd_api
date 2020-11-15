@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +31,21 @@ namespace pd_api
             {
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+            //services.AddAuthentication()
+            //    //.AddGoogle(options =>
+            //    //{
+            //    //    IConfigurationSection googleAuthNSection =
+            //    //        Configuration.GetSection("Authentication:Google");
+
+            //    //    options.ClientId = googleAuthNSection["ClientId"];
+            //    //    options.ClientSecret = googleAuthNSection["ClientSecret"];
+            //    //});
+            //    .AddMicrosoftAccount(microsoftOptions =>
+            //    {
+            //        microsoftOptions.ClientId = "d6af278e-39b2-449f-8962-27f37b0b2576"; //Configuration["Authentication:Microsoft:ClientId"];
+            //        microsoftOptions.ClientSecret = "4~xV9Wk.Uu.4Z_r8jXwjMcrdut6iLY5Im."; //Configuration["Authentication:Microsoft:ClientSecret"];
+            //    });
 
             services.AddControllers();
 
@@ -72,8 +82,6 @@ namespace pd_api
             });
 
             app.UseAuthentication();
-
-            loggerFactory.AddFile("Logs/smart-evolution-{Date}.txt");
         }
     }
 }

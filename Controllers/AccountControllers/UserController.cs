@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using pd_api.Models;
 using pd_api.Models.Account;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
 {
-
-    public class RegistrationController : Controller
+    [Route("User")]
+    public class UserController : Controller
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
@@ -17,7 +18,7 @@ namespace pd_api.Controllers.AccountControllers
         private IPasswordHasher<AppUser> passwordHasher;
         private IConfiguration configuration;
 
-        public RegistrationController(UserManager<AppUser> userMgr,
+        public UserController(UserManager<AppUser> userMgr,
             SignInManager<AppUser> signMgr,
             IConfiguration config,
             IUserValidator<AppUser> userValid,
@@ -30,8 +31,30 @@ namespace pd_api.Controllers.AccountControllers
             passwordHasher = passwordHash;
         }
 
-        [HttpGet("GetUserAccount")]
-        public async Task<JsonResult> GetUserAccount([FromBody] string userName)
+        [HttpGet("Users")]
+        public JsonResult GetAllUsers()
+        {
+            var users = from u in userManager.Users
+                        select new
+                        {
+                            UserName = u.UserName,
+                            Email = u.Email,
+                            Name = u.Name,
+                            Lastname = u.Lastname,
+                            PostCode = u.PostCode,
+                            City = u.City,
+                            Address = u.Address
+                        };
+
+            if (users != null)
+            {
+                return Json(users);
+            }
+            return Json(null);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetUser(string userName)
         {
             if (!string.IsNullOrEmpty(userName))
             {
@@ -54,8 +77,8 @@ namespace pd_api.Controllers.AccountControllers
             }
         }
 
-        [HttpPost("CreateAccount")]
-        public async Task<JsonResult> CreateAccount([FromBody] RegistrationModel registrationData)
+        [HttpPost]
+        public async Task<JsonResult> CreateUser([FromBody] RegistrationModel registrationData)
         {
             if (ModelState.IsValid)
             {
@@ -81,8 +104,8 @@ namespace pd_api.Controllers.AccountControllers
             return Json(ModelState);
         }
 
-        [HttpPatch("EditAccount")]
-        public async Task<JsonResult> EditAccount([FromBody] EditAccountModel editAccountData)
+        [HttpPatch]
+        public async Task<JsonResult> EditUser([FromBody] EditUserModel editAccountData)
         {
             if (ModelState.IsValid)
             {
@@ -124,8 +147,8 @@ namespace pd_api.Controllers.AccountControllers
             }
         }
 
-        [HttpDelete("DeleteAccount")]
-        public async Task<JsonResult> DeleteAccount([FromBody] LoginModel deleteData)
+        [HttpDelete]
+        public async Task<JsonResult> DeleteUser([FromBody] LoginModel deleteData)
         {
             if (ModelState.IsValid)
             {

@@ -10,22 +10,19 @@ using System.Threading.Tasks;
 
 namespace pd_api.Controllers.EmailControllers
 {
+    [Route("ConfigurationEmail")]
     public class ConfigurationEmailController : Controller
     {
         private AppDbContext context;
-        private readonly ILogger logger;
 
-        public ConfigurationEmailController(AppDbContext ctx,
-            ILogger<ConfigurationEmailController> log)
+        public ConfigurationEmailController(AppDbContext ctx)
         {
             context = ctx;
-            logger = log;
         }
 
-        [HttpGet("GetConfiguration")]
+        [HttpGet]
         public JsonResult GetConfiguration()
         {
-            logger.LogInformation("GET Controller called");
             try
             {
                 EmailConfigurationModel model = context.EmailConfigurations.First();
@@ -33,12 +30,11 @@ namespace pd_api.Controllers.EmailControllers
             }
             catch (Exception ex)
             {
-                logger.LogError("Log from GetConfiguration().", ex);
                 return Json(new { succeeded = false, messageInfo = ex.ToString() });
             }
         }
 
-        [HttpPost("SetConfiguration")]
+        [HttpPost]
         public async Task<JsonResult> SetConfiguration([FromBody] EmailConfigurationModel configurationData)
         {
             if (ModelState.IsValid)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace pd_api.Models.Account
 {
-    public class EditAccountModel
+    public class EditUserModel
     {
         [Required]
         public string UserName { get; set; }

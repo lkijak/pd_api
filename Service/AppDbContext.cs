@@ -17,6 +17,6 @@ namespace pd_api.Service
         {
         }
 
-        public DbSet<EmailConfigurationModel> EmailConfigurations { get; set; }
+        public virtual DbSet<EmailConfigurationModel> EmailConfigurations { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
 {
+    [Route("Login")]
     public class LoginController : Controller
     {
         private SignInManager<AppUser> signInManager;
@@ -21,7 +22,7 @@ namespace pd_api.Controllers.AccountControllers
             userManager = userMgr;
         }
 
-        [HttpPost("Login")]
+        [HttpPost]
         public async Task<JsonResult> Login([FromBody] LoginModel loginData)
         {
             if (ModelState.IsValid)
@@ -56,13 +57,6 @@ namespace pd_api.Controllers.AccountControllers
             {
                 return Json(ModelState);
             }
-        }
-
-        [HttpPost("Logout")]
-        public async Task<JsonResult> Logout()
-        {
-            await signInManager.SignOutAsync();
-            return Json(new { succeeded = true });
         }
     }
 }
