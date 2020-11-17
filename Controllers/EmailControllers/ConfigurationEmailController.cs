@@ -36,7 +36,7 @@ namespace pd_api.Controllers.EmailControllers
         {
             if (context.EmailConfigurations == null)
             {
-                return Json(new { succeeded = false, messageInfo = "The configuration record already exists." });
+                return Json(new { succeeded = false, messageInfo = MessageInfo.Email_ConfigurationRecordAlreadyExist });
             }
             if (ModelState.IsValid)
             {
@@ -58,7 +58,7 @@ namespace pd_api.Controllers.EmailControllers
         }
 
         [HttpPatch]
-        public async Task<JsonResult> EditConfiguration([FromBody] EmailConfigurationModel configurationData)
+        public JsonResult EditConfiguration([FromBody] EmailConfigurationModel configurationData)
         {
             EmailConfigurationModel emeilConfig = context.EmailConfigurations.FirstOrDefault();
             if (emeilConfig != null)
@@ -81,7 +81,7 @@ namespace pd_api.Controllers.EmailControllers
                     return Json(new { exception = ex.ToString() });
                 }
             }
-            return Json(new { succeeded = false, messageInfo = "Could not find email configuration." });
+            return Json(new { succeeded = false, messageInfo = MessageInfo.Email_CouldNotFindConfiguration });
         }
     }
 }

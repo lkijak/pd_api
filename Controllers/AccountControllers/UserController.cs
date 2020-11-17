@@ -68,12 +68,12 @@ namespace pd_api.Controllers.AccountControllers
                 }
                 else
                 {
-                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
+                    return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
                 }
             }
             else
             {
-                return Json(new { succeeded = false, messageInfo = "Didn't pass the username" });
+                return Json(new { succeeded = false, messageInfo = MessageInfo.User_DidntPassUserName });
             }
         }
 
@@ -115,7 +115,7 @@ namespace pd_api.Controllers.AccountControllers
                     if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, editAccountData.Password) ==
                         PasswordVerificationResult.Failed)
                     {
-                        return Json(new { succeeded = false, messageInfo = "Wrong password." });
+                        return Json(new { succeeded = false, messageInfo = MessageInfo.User_WrongPassword });
                     }
                     else
                     {
@@ -138,7 +138,7 @@ namespace pd_api.Controllers.AccountControllers
                 }
                 else
                 {
-                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
+                    return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
                 }
             }
             else
@@ -158,7 +158,7 @@ namespace pd_api.Controllers.AccountControllers
                     if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, deleteData.Password) ==
                         PasswordVerificationResult.Failed)
                     {
-                        return Json(new { succeeded = false, messageInfo = "Wrong password." });
+                        return Json(new { succeeded = false, messageInfo = MessageInfo.User_WrongPassword });
                     }
                     else
                     {
@@ -173,7 +173,7 @@ namespace pd_api.Controllers.AccountControllers
                         }
                     }
                 }
-                return Json(new { succeeded = false, messageInfo = "Could not find user." });
+                return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
             }
             else
             {

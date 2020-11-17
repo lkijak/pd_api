@@ -48,12 +48,12 @@ namespace pd_api.Controllers.AccountControllers
                     }
                     else
                     {
-                        return Json(new { succeeded = false, messageInfo = "Email address is not confirmed." });
+                        return Json(new { succeeded = false, messageInfo = MessageInfo.Login_EmailAddress_NotConfirmed });
                     }
                 }
                 else
                 {
-                    return Json(new { succeeded = false, messageInfo = "Could not find user." });
+                    return Json(new { succeeded = false, messageInfo = MessageInfo.Login_CouldNotFindUser });
                 }
             }
             else
@@ -66,11 +66,6 @@ namespace pd_api.Controllers.AccountControllers
         [AllowAnonymous]
         public IActionResult GoogleLogin()
         {
-            //string redirectUrl = HttpContext.Request.Host.Value + Url.Action("GoogleResponse");
-            //var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-            ////return Json(properties);
-            //return new ChallengeResult("Google", properties);
-
             string redirectUrl = Url.Action("GoogleResponse", "Login");
             var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
             return new ChallengeResult("Google", properties);
@@ -83,7 +78,7 @@ namespace pd_api.Controllers.AccountControllers
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                return Json(new { succeeded = false });
+                return Json(new { succeeded = false, messageInfo = MessageInfo.Login_GoogleAccountDontExist });
             }
             
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
@@ -96,7 +91,7 @@ namespace pd_api.Controllers.AccountControllers
             {
                 AppUser user = new AppUser
                 {
-                    UserName = "User",
+                    UserName = info.Principal.FindFirst(ClaimTypes.Email).Value,
                     Email = info.Principal.FindFirst(ClaimTypes.Email).Value,
                     Name = info.Principal.FindFirst(ClaimTypes.Name).Value
                 };
@@ -111,8 +106,26 @@ namespace pd_api.Controllers.AccountControllers
                         return Json(userInfo);
                     }
                 }
-                return Json(new { succeeded = false, messageInfo = "Access denied" });
+                return Json(new { succeeded = false, messageInfo = MessageInfo.Login_AccessDenied });
             }
+        }
+
+        [HttpGet("MicrosoftLogin")]
+        [AllowAnonymous]
+        public IActionResult MicrosoftLogin()
+        {
+            string redirectUrl = Url.Action("MicrosoftResponse", "Login");
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Microsoft", redirectUrl);
+            return new ChallengeResult("Microsoft", properties);
+        }
+
+        [HttpGet("MicrosoftResponse")]
+        [AllowAnonymous]
+        public async Task<JsonResult> MicrosoftResponse()
+        {
+            var info = User.Identity;
+
+            return Json(info);
         }
     }
 }

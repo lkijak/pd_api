@@ -25,11 +25,13 @@ namespace pd_api
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration["Database:pd_api_DBLocal:ConnectionString"]));
+                    Configuration["Database:pd_api:ConnectionString"]));
 
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication()
@@ -38,13 +40,14 @@ namespace pd_api
                     options.ClientId = "850157239961-g16l5ifn3btccslaogvpicf7umrbrubd.apps.googleusercontent.com";
                     options.ClientSecret = "UQKekGT5LPtT5VmmOUe5w-VM";
                     options.SignInScheme = IdentityConstants.ExternalScheme;
+                })
+                .AddMicrosoftAccount(microsoftOptions =>
+                {
+                    microsoftOptions.ClientId = "d29553b5-2924-4aad-be2f-bac0a97fb02d";
+                    microsoftOptions.ClientSecret = "3tr~nvkIgF~Q390hYodMM6WJDmz7u_.rO7";
+                    microsoftOptions.CallbackPath = "/signin-oidc";
+                    microsoftOptions.SaveTokens = true;
                 });
-
-            //.AddMicrosoftAccount(microsoftOptions =>
-            //{
-            //    microsoftOptions.ClientId = "d6af278e-39b2-449f-8962-27f37b0b2576"; //Configuration["Authentication:Microsoft:ClientId"];
-            //    microsoftOptions.ClientSecret = "4~xV9Wk.Uu.4Z_r8jXwjMcrdut6iLY5Im."; //Configuration["Authentication:Microsoft:ClientSecret"];
-            //});
 
             services.AddControllers();
 
