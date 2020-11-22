@@ -61,6 +61,24 @@ namespace pd_api {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono żadnego słownika..
+        /// </summary>
+        public static string Dictionary_CouldNotFindAnyDictionary {
+            get {
+                return ResourceManager.GetString("Dictionary_CouldNotFindAnyDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono słownika..
+        /// </summary>
+        public static string Dictionary_CouldNotFindDictionary {
+            get {
+                return ResourceManager.GetString("Dictionary_CouldNotFindDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Wpis z konfiguracją już istnieje w bazie danych..
         /// </summary>
         public static string Email_ConfigurationRecordAlreadyExist {
@@ -75,6 +93,24 @@ namespace pd_api {
         public static string Email_CouldNotFindConfiguration {
             get {
                 return ResourceManager.GetString("Email_CouldNotFindConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono zasobu {0}..
+        /// </summary>
+        public static string Error_NotFound {
+            get {
+                return ResourceManager.GetString("Error_NotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono..
+        /// </summary>
+        public static string Error_NotFoundAny {
+            get {
+                return ResourceManager.GetString("Error_NotFoundAny", resourceCulture);
             }
         }
         

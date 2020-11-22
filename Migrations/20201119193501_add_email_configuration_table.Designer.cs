@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pd_api.Service;
 
 namespace pd_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201119193501_add_email_configuration_table")]
+    partial class add_email_configuration_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,39 +216,6 @@ namespace pd_api.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("pd_api.Models.Dictionary.DictionaryModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Dictionary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("Dictionaries_Index_Name");
-
-                    b.ToTable("Dictionaries");
-                });
-
             modelBuilder.Entity("pd_api.Models.Email.EmailConfigurationModel", b =>
                 {
                     b.Property<int>("Id")
@@ -293,187 +262,6 @@ namespace pd_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmailConfigurations");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.AnswerModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("QuestionModelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionModelId");
-
-                    b.ToTable("Answers");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.QuestionModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SurveyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SurveyId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.ResponseModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SurveyResponseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SurveyResponseModelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("SurveyResponseModelId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Responses");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.SurveyModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("Survey_Index_Name");
-
-                    b.ToTable("Surveys");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.SurveyResponseModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SurveyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SurveyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SurveyResponses");
                 });
 
             modelBuilder.Entity("pd_api.Models.User.AppRole", b =>
@@ -554,93 +342,6 @@ namespace pd_api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.AnswerModel", b =>
-                {
-                    b.HasOne("pd_api.Models.Survey.QuestionModel", null)
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionModelId");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.QuestionModel", b =>
-                {
-                    b.HasOne("pd_api.Models.Survey.SurveyModel", "Survey")
-                        .WithMany()
-                        .HasForeignKey("SurveyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Survey");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.ResponseModel", b =>
-                {
-                    b.HasOne("pd_api.Models.Survey.AnswerModel", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pd_api.Models.Survey.QuestionModel", "Question")
-                        .WithMany("Responses")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pd_api.Models.Survey.SurveyResponseModel", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("SurveyResponseModelId");
-
-                    b.HasOne("pd_api.Models.AppUser", "User")
-                        .WithMany("Responses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.SurveyResponseModel", b =>
-                {
-                    b.HasOne("pd_api.Models.Survey.SurveyModel", "Survey")
-                        .WithMany()
-                        .HasForeignKey("SurveyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pd_api.Models.AppUser", "User")
-                        .WithMany("SurveyResponses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Survey");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("pd_api.Models.AppUser", b =>
-                {
-                    b.Navigation("Responses");
-
-                    b.Navigation("SurveyResponses");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.QuestionModel", b =>
-                {
-                    b.Navigation("Answers");
-
-                    b.Navigation("Responses");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Survey.SurveyResponseModel", b =>
-                {
-                    b.Navigation("Responses");
                 });
 #pragma warning restore 612, 618
         }

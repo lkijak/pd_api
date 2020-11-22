@@ -117,11 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Dictionary_CouldNotFindAnyDictionary" xml:space="preserve">
+    <value>Nie znaleziono żadnego słownika.</value>
+  </data>
+  <data name="Dictionary_CouldNotFindDictionary" xml:space="preserve">
+    <value>Nie znaleziono słownika.</value>
+  </data>
   <data name="Email_ConfigurationRecordAlreadyExist" xml:space="preserve">
     <value>Wpis z konfiguracją już istnieje w bazie danych.</value>
   </data>
   <data name="Email_CouldNotFindConfiguration" xml:space="preserve">
     <value>Nie można znaleźć ustawień poczty.</value>
+  </data>
+  <data name="Error_NotFound" xml:space="preserve">
+    <value>Nie znaleziono zasobu {0}.</value>
+  </data>
+  <data name="Error_NotFoundAny" xml:space="preserve">
+    <value>Nie znaleziono.</value>
   </data>
   <data name="Login_AccessDenied" xml:space="preserve">
     <value>Dostęp nie dozwolony.</value>

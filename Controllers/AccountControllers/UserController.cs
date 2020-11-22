@@ -64,6 +64,7 @@ namespace pd_api.Controllers.AccountControllers
                     var config = new MapperConfiguration(config => config.CreateMap<AppUser, ShowUserAccountModel>());
                     var mapper = new Mapper(config);
                     ShowUserAccountModel showAccount = mapper.Map<ShowUserAccountModel>(user);
+                    showAccount.UserRole = await userManager.GetRolesAsync(user);
                     return Json(showAccount);
                 }
                 else

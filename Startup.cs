@@ -40,13 +40,6 @@ namespace pd_api
                     options.ClientId = "850157239961-g16l5ifn3btccslaogvpicf7umrbrubd.apps.googleusercontent.com";
                     options.ClientSecret = "UQKekGT5LPtT5VmmOUe5w-VM";
                     options.SignInScheme = IdentityConstants.ExternalScheme;
-                })
-                .AddMicrosoftAccount(microsoftOptions =>
-                {
-                    microsoftOptions.ClientId = "d29553b5-2924-4aad-be2f-bac0a97fb02d";
-                    microsoftOptions.ClientSecret = "3tr~nvkIgF~Q390hYodMM6WJDmz7u_.rO7";
-                    microsoftOptions.CallbackPath = "/signin-oidc";
-                    microsoftOptions.SaveTokens = true;
                 });
 
             services.AddControllers();

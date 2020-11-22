@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace pd_api.Models.Account
 {
     public class ShowUserAccountModel
@@ -11,5 +13,6 @@ namespace pd_api.Models.Account
         public string PostCode { get; set; }
         public string City { get; set; }
         public string Address { get; set; }
+        public IList<string> UserRole { get; set; }
     }
 }

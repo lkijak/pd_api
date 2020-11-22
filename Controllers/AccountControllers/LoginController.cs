@@ -109,23 +109,5 @@ namespace pd_api.Controllers.AccountControllers
                 return Json(new { succeeded = false, messageInfo = MessageInfo.Login_AccessDenied });
             }
         }
-
-        [HttpGet("MicrosoftLogin")]
-        [AllowAnonymous]
-        public IActionResult MicrosoftLogin()
-        {
-            string redirectUrl = Url.Action("MicrosoftResponse", "Login");
-            var properties = signInManager.ConfigureExternalAuthenticationProperties("Microsoft", redirectUrl);
-            return new ChallengeResult("Microsoft", properties);
-        }
-
-        [HttpGet("MicrosoftResponse")]
-        [AllowAnonymous]
-        public async Task<JsonResult> MicrosoftResponse()
-        {
-            var info = User.Identity;
-
-            return Json(info);
-        }
     }
 }
