@@ -1,14 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using pd_api.Models;
-using pd_api.Models.User;
-using pd_api.Models.Email;
-using pd_api.Models.Dictionary;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using pd_api.Models.Survey;
+using pd_api.Models.DbModel;
 
-namespace pd_api.Service
+namespace pd_api.Models
 {
     public class AppDbContext : IdentityDbContext<AppUser, AppRole, int>
     {
@@ -21,28 +17,26 @@ namespace pd_api.Service
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<DictionaryModel>()
+            builder.Entity<Dictionary>()
                 .HasIndex(i => i.Name)
                 .HasDatabaseName("Dictionaries_Index_Name");
 
-            builder.Entity<DictionaryModel>()
-                .Property(b => b.Dictionary)
+            builder.Entity<Dictionary>()
+                .Property(b => b.DictionaryData)
                 .HasConversion(
                     v => JsonConvert.SerializeObject(v),
                     v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
 
-            builder.Entity<SurveyModel>()
+            builder.Entity<Survey>()
                 .HasIndex(i => i.Name)
                 .HasDatabaseName("Survey_Index_Name")
                 .IsUnique();
         }
 
-        public virtual DbSet<EmailConfigurationModel> EmailConfigurations { get; set; }
-        public virtual DbSet<DictionaryModel> Dictionaries { get; set; }
-        public virtual DbSet<SurveyModel> Surveys { get; set; }
-        public virtual DbSet<QuestionModel> Questions { get; set; }
-        public virtual DbSet<AnswerModel> Answers { get; set; }
-        public virtual DbSet<SurveyResponseModel> SurveyResponses { get; set; }
-        public virtual DbSet<ResponseModel> Responses { get; set; }
+        public virtual DbSet<EmailConfiguration> EmailConfigurations { get; set; }
+        public virtual DbSet<Dictionary> Dictionaries { get; set; }
+        public virtual DbSet<Survey> Surveys { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<OferedAnswer> OferedAnswers { get; set; }
     }
 }

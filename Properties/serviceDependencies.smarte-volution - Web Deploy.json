@@ -3,6 +3,12 @@
     "apis1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/projectDapi/apis/pdapi",
       "type": "apis.azure"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/project-d/databases/ProjectD",
+      "type": "mssql.azure",
+      "connectionId": "Database/pd_api/ConnectionString",
+      "secretStore": "AzureAppSettings"
     }
   }
 }

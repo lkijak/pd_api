@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using pd_api.Models.Email;
-using pd_api.Service;
+using pd_api.Models;
+using pd_api.Models.DbModel;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace pd_api.Controllers.EmailControllers
         {
             try
             {
-                EmailConfigurationModel model = context.EmailConfigurations.First();
+                EmailConfiguration model = context.EmailConfigurations.First();
                 return Json(model);
             }
             catch (Exception ex)
@@ -32,7 +32,7 @@ namespace pd_api.Controllers.EmailControllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateConfiguration([FromBody] EmailConfigurationModel configurationData)
+        public async Task<JsonResult> CreateConfiguration([FromBody] EmailConfiguration configurationData)
         {
             if (context.EmailConfigurations == null)
             {
@@ -58,9 +58,9 @@ namespace pd_api.Controllers.EmailControllers
         }
 
         [HttpPatch]
-        public JsonResult EditConfiguration([FromBody] EmailConfigurationModel configurationData)
+        public JsonResult EditConfiguration([FromBody] EmailConfiguration configurationData)
         {
-            EmailConfigurationModel emeilConfig = context.EmailConfigurations.FirstOrDefault();
+            EmailConfiguration emeilConfig = context.EmailConfigurations.FirstOrDefault();
             if (emeilConfig != null)
             {
                 emeilConfig.FriendlyName = configurationData.FriendlyName;

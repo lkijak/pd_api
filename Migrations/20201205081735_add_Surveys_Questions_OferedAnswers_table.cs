@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace pd_api.Migrations
 {
-    public partial class add_surveys_questions_answers_table : Migration
+    public partial class add_Surveys_Questions_OferedAnswers_table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,9 +16,9 @@ namespace pd_api.Migrations
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserCreateId = table.Column<int>(type: "int", nullable: false),
-                    UserModifyId = table.Column<int>(type: "int", nullable: false)
+                    UserModifyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,12 +31,12 @@ namespace pd_api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SurveyId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserCreateId = table.Column<int>(type: "int", nullable: false),
-                    UserModifyId = table.Column<int>(type: "int", nullable: false)
+                    UserModifyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -50,33 +50,33 @@ namespace pd_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answers",
+                name: "OferedAnswers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuestionModelId = table.Column<int>(type: "int", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QuestionId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserCreateId = table.Column<int>(type: "int", nullable: false),
-                    UserModifyId = table.Column<int>(type: "int", nullable: false)
+                    UserModifyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => x.Id);
+                    table.PrimaryKey("PK_OferedAnswers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Answers_Questions_QuestionModelId",
-                        column: x => x.QuestionModelId,
+                        name: "FK_OferedAnswers_Questions_QuestionId",
+                        column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answers_QuestionModelId",
-                table: "Answers",
-                column: "QuestionModelId");
+                name: "IX_OferedAnswers_QuestionId",
+                table: "OferedAnswers",
+                column: "QuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_SurveyId",
@@ -93,7 +93,7 @@ namespace pd_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Answers");
+                name: "OferedAnswers");
 
             migrationBuilder.DropTable(
                 name: "Questions");

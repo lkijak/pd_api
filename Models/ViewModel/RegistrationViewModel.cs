@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace pd_api.Models.Account
+namespace pd_api.Models.ViewModel
 {
-    public class RegistrationModel
+    public class RegistrationViewModel
     {
         [Required]
         public string UserName { get; set; }

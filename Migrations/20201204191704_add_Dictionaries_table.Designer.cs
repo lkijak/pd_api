@@ -10,8 +10,8 @@ using pd_api.Service;
 namespace pd_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201119193501_add_email_configuration_table")]
-    partial class add_email_configuration_table
+    [Migration("20201204191704_add_Dictionaries_table")]
+    partial class add_Dictionaries_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,7 +161,7 @@ namespace pd_api.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("ModifyDate")
+                    b.Property<DateTime?>("ModifyDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -196,7 +196,7 @@ namespace pd_api.Migrations
                     b.Property<int>("UserCreateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModifyId")
+                    b.Property<int?>("UserModifyId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -216,7 +216,40 @@ namespace pd_api.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("pd_api.Models.Email.EmailConfigurationModel", b =>
+            modelBuilder.Entity("pd_api.Models.Dictionary.Dictionary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DictionaryData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("UserCreateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserModifyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .HasDatabaseName("Dictionaries_Index_Name");
+
+                    b.ToTable("Dictionaries");
+                });
+
+            modelBuilder.Entity("pd_api.Models.Email.EmailConfiguration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +274,7 @@ namespace pd_api.Migrations
                     b.Property<string>("Login")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ModifyDate")
+                    b.Property<DateTime?>("ModifyDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
@@ -256,7 +289,7 @@ namespace pd_api.Migrations
                     b.Property<int>("UserCreateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModifyId")
+                    b.Property<int?>("UserModifyId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

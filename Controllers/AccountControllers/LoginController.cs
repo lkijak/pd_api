@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using pd_api.Models;
-using pd_api.Models.Account;
+using pd_api.Models.DbModel;
+using pd_api.Models.ViewModel;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -26,7 +26,7 @@ namespace pd_api.Controllers.AccountControllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<JsonResult> Login([FromBody] LoginModel loginData)
+        public async Task<JsonResult> Login([FromBody] LoginViewModel loginData)
         {
             if (ModelState.IsValid)
             {

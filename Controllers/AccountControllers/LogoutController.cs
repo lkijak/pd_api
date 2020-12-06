@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using pd_api.Models;
+using pd_api.Models.DbModel;
 using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers

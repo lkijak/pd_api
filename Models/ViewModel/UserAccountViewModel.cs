@@ -1,19 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 
-namespace pd_api.Models.Account
+namespace pd_api.Models.ViewModel
 {
-    public class EditUserModel
+    public class UserAccountViewModel
     {
-        [Required]
         public string UserName { get; set; }
-
-        [Required]
-        public string Password { get; set; }
-
+        public string Email { get; set; }
         public string Name { get; set; }
         public string Lastname { get; set; }
         public string PostCode { get; set; }
         public string City { get; set; }
         public string Address { get; set; }
+        public IList<string> Role { get; set; }
     }
 }

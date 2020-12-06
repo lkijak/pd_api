@@ -10,8 +10,8 @@ using pd_api.Service;
 namespace pd_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201119211931_add_dictionaries_table")]
-    partial class add_dictionaries_table
+    [Migration("20201204153532_add_Identity_table")]
+    partial class add_Identity_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,7 +161,7 @@ namespace pd_api.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("ModifyDate")
+                    b.Property<DateTime?>("ModifyDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -196,7 +196,7 @@ namespace pd_api.Migrations
                     b.Property<int>("UserCreateId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserModifyId")
+                    b.Property<int?>("UserModifyId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -214,87 +214,6 @@ namespace pd_api.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Dictionary.DictionaryModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Dictionary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .HasDatabaseName("Dictionaries_Index_Name");
-
-                    b.ToTable("Dictionaries");
-                });
-
-            modelBuilder.Entity("pd_api.Models.Email.EmailConfigurationModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DefaultMessageBody")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EnableSSL")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FriendlyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Port")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("UseDefaultCredential")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailConfigurations");
                 });
 
             modelBuilder.Entity("pd_api.Models.User.AppRole", b =>

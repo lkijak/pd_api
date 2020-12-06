@@ -160,6 +160,24 @@ namespace pd_api {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Administrator.
+        /// </summary>
+        public static string Role_Administrator {
+            get {
+                return ResourceManager.GetString("Role_Administrator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Uzytkownik.
+        /// </summary>
+        public static string Role_User {
+            get {
+                return ResourceManager.GetString("Role_User", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono użytkownika..
         /// </summary>
         public static string User_CouldNotFindUser {

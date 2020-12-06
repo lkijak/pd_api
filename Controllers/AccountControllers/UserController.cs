@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using pd_api.Models;
-using pd_api.Models.Account;
+using pd_api.Models.DbModel;
+using pd_api.Models.ViewModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -61,10 +61,11 @@ namespace pd_api.Controllers.AccountControllers
                 AppUser user = await userManager.FindByNameAsync(userName);
                 if (user != null)
                 {
-                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, ShowUserAccountModel>());
+                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, UserAccountViewModel>());
                     var mapper = new Mapper(config);
-                    ShowUserAccountModel showAccount = mapper.Map<ShowUserAccountModel>(user);
-                    showAccount.UserRole = await userManager.GetRolesAsync(user);
+                    UserAccountViewModel showAccount = mapper.Map<UserAccountViewModel>(user);
+                    var roles = await userManager.GetRolesAsync(user);
+                    showAccount.Role = roles;
                     return Json(showAccount);
                 }
                 else
@@ -79,7 +80,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateUser([FromBody] RegistrationModel registrationData)
+        public async Task<JsonResult> CreateUser([FromBody] RegistrationViewModel registrationData)
         {
             if (ModelState.IsValid)
             {
@@ -90,8 +91,11 @@ namespace pd_api.Controllers.AccountControllers
                 };
 
                 IdentityResult createResult = await userManager.CreateAsync(user, registrationData.Password);
-                if (createResult.Succeeded)
+                IdentityResult addToRoleResult = await userManager.AddToRoleAsync(user, MessageInfo.Role_User);
+                if (createResult.Succeeded && addToRoleResult.Succeeded)
                 {
+                    
+
                     //tutaj dodać metodę do wysyłania email potwierdzającego adres 
                     //i  ustawić potwierdzenie adresu w setup
 
@@ -106,7 +110,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPatch]
-        public async Task<JsonResult> EditUser([FromBody] EditUserModel editAccountData)
+        public async Task<JsonResult> EditUser([FromBody] EditUserViewModel editAccountData)
         {
             if (ModelState.IsValid)
             {
@@ -149,7 +153,7 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpDelete]
-        public async Task<JsonResult> DeleteUser([FromBody] LoginModel deleteData)
+        public async Task<JsonResult> DeleteUser([FromBody] LoginViewModel deleteData)
         {
             if (ModelState.IsValid)
             {

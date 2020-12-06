@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using pd_api.Service;
-using System;
-using System.Collections.Generic;
+using pd_api.Models;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -1,8 +1,7 @@
 ﻿
-
-namespace pd_api.Models.Email
+namespace pd_api.Models.DbModel
 {
-    public class EmailConfigurationModel : BaseModel
+    public class EmailConfiguration : BaseModel
     {
         public string FriendlyName { get; set; }
         public string Login { get; set; }

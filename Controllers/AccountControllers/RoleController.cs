@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using pd_api.Models.User;
+using pd_api.Models.DbModel;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +11,7 @@ namespace pd_api.Controllers.AccountControllers
     public class RoleController : Controller
     {
         private RoleManager<AppRole> roleManager;
+        private ControllerErrorHandler handler = new ControllerErrorHandler();
 
         public RoleController(RoleManager<AppRole> roleMgr)
         {
@@ -27,7 +26,7 @@ namespace pd_api.Controllers.AccountControllers
             {
                 return Ok(roles);
             }
-            return NotFound(MessageInfo.Error_NotFoundAny);
+            return Ok(new string[0]);
         }
 
         [HttpGet]
@@ -55,37 +54,40 @@ namespace pd_api.Controllers.AccountControllers
             {
                 Name = name
             };
-            //var result = await roleManager.CreateAsync(role);
-            //if (result.Succeeded)
-            //{
-            //    return Created("", role);
-            //}
-            //return NotFound(result);
 
-            try
+            IdentityResult result = await roleManager.CreateAsync(role);
+            if (result.Succeeded)
             {
-                var result = await roleManager.CreateAsync(role);
-                if (result.Succeeded)
-                {
-                    return Created("", role);
-                }
-                
+                return Created("", role);
             }
-            catch (Exception ex)
+            else
             {
-
-                throw;
+                return handler.IdentityResultError(result);
             }
-            return Ok();
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRole(string name)
+        {
+            IdentityResult result;
+            AppRole role = await roleManager.FindByNameAsync(name);
+            try
+            {
+                result =  await roleManager.DeleteAsync(role);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-
-
-
-
-
-
-
+            if (result.Succeeded)
+            {
+                return Ok(null);
+            }
+            else
+            {
+                return handler.IdentityResultError(result);
+            }
+        }
     }
 }

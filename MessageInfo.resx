@@ -150,6 +150,12 @@
   <data name="Login_MicrosoftAccountDontExist" xml:space="preserve">
     <value>Błąd z dupa dla microsoft.</value>
   </data>
+  <data name="Role_Administrator" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="Role_User" xml:space="preserve">
+    <value>Uzytkownik</value>
+  </data>
   <data name="User_CouldNotFindUser" xml:space="preserve">
     <value>Nie znaleziono użytkownika.</value>
   </data>
