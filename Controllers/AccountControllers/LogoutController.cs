@@ -16,10 +16,10 @@ namespace pd_api.Controllers.AccountControllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return Json(new { succeeded = true });
+            return Ok();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace pd_api.Controllers.AccountControllers
 {
     [Route("Login")]
-    public class LoginController : Controller
+    public class LoginController : Controller  //******************************************************************* Poprawić statusy kodów serwera
     {
         private SignInManager<AppUser> signInManager;
         //private PasswordHasher<AppUser> passwordHasher;
@@ -26,40 +26,22 @@ namespace pd_api.Controllers.AccountControllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<JsonResult> Login([FromBody] LoginViewModel loginData)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel loginData)
         {
             if (ModelState.IsValid)
             {
                 AppUser user = await userManager.FindByNameAsync(loginData.UserName);
+                Microsoft.AspNetCore.Identity.SignInResult signInResult = null;
                 if (user != null)
                 {
-                    if (true)//await userManager.IsEmailConfirmedAsync(user))
+                    if (true)//await userManager.IsEmailConfirmedAsync(user))  ************************ przerobic odpowiedź na zgodną z weryfikacją potwierdzenia email
                     {
-                        Microsoft.AspNetCore.Identity.SignInResult signInResult =
-                            await signInManager.PasswordSignInAsync(user, loginData.Password, true, false);
-                        if (signInResult.Succeeded)
-                        {
-                            return Json(signInResult);
-                        }
-                        else
-                        {
-                            return Json(signInResult);
-                        }
-                    }
-                    else
-                    {
-                        return Json(new { succeeded = false, messageInfo = MessageInfo.Login_EmailAddress_NotConfirmed });
+                        signInResult = await signInManager.PasswordSignInAsync(user, loginData.Password, true, false);
                     }
                 }
-                else
-                {
-                    return Json(new { succeeded = false, messageInfo = MessageInfo.Login_CouldNotFindUser });
-                }
+                return Ok(signInResult);
             }
-            else
-            {
-                return Json(ModelState);
-            }
+            return ValidationProblem(ModelState);
         }
 
         [HttpGet("GoogleLogin")]
@@ -73,19 +55,19 @@ namespace pd_api.Controllers.AccountControllers
 
         [HttpGet("GoogleResponse")]
         [AllowAnonymous]
-        public async Task<JsonResult> GoogleResponse()
+        public async Task<IActionResult> GoogleResponse()
         {
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                return Json(new { succeeded = false, messageInfo = MessageInfo.Login_GoogleAccountDontExist });
+                return Ok(info);
             }
             
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
             string[] userInfo = { info.Principal.FindFirst(ClaimTypes.Name).Value, info.Principal.FindFirst(ClaimTypes.Email).Value };
             if (result.Succeeded)
             {
-                return Json(userInfo);
+                return Ok(userInfo);
             }
             else
             {
@@ -96,17 +78,17 @@ namespace pd_api.Controllers.AccountControllers
                     Name = info.Principal.FindFirst(ClaimTypes.Name).Value
                 };
 
-                IdentityResult identResult = await userManager.CreateAsync(user);
-                if (identResult.Succeeded)
+                IdentityResult identityResult = await userManager.CreateAsync(user);
+                if (identityResult.Succeeded)
                 {
-                    identResult = await userManager.AddLoginAsync(user, info);
-                    if (identResult.Succeeded)
+                    identityResult = await userManager.AddLoginAsync(user, info);
+                    if (identityResult.Succeeded)
                     {
                         await signInManager.SignInAsync(user, false);
                         return Json(userInfo);
                     }
                 }
-                return Json(new { succeeded = false, messageInfo = MessageInfo.Login_AccessDenied });
+                return Ok(identityResult);
             }
         }
     }

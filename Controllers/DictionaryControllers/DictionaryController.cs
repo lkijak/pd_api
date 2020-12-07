@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pd_api.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,27 +21,44 @@ namespace pd_api.Controllers.DictionaryControllers
         [HttpGet("Dictionaries")]
         public IActionResult GetAllDictionaries()
         {
-            var dictionaries = context.Dictionaries;
-            if (dictionaries.Any())     // ***************************** Sprawdzić warunek przy zapisanych słownikach w bazie
+            IQueryable<pd_api.Models.DbModel.Dictionary> dictionaries = null;
+            if (context.Dictionaries.Any())
             {
-                return Json(dictionaries);
+                dictionaries = context.Dictionaries;
             }
-            //return Json(new { succeeded = false, messageInfo = MessageInfo.Dictionary_CouldNotFindAnyDictionary });
-            return NotFound();
+            return Ok(dictionaries);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetDictionary(string dictionaryName)
         {
-            var dictionary = await context.Dictionaries.FirstOrDefaultAsync(d => d.Name == dictionaryName);
-            if (dictionary != null)
+            pd_api.Models.DbModel.Dictionary dictionary = null;
+            if (context.Dictionaries.Any())
             {
-                return Json(dictionary);
+                dictionary = await context.Dictionaries.FirstOrDefaultAsync(d => d.Name == dictionaryName);
             }
-            //return Json(new { succeeded = false, messageInfo = MessageInfo.Dictionary_CouldNotFindDictionary });
-            return NotFound(("Dupa {0}", dictionaryName));
+            return Ok(dictionary);
         }
 
+        [HttpPost]
+        public IActionResult CreateDictionary(string name)
+        {
+            int currentUser = 123; //********************************* zmienić
+            DateTime currentDate = DateTime.Now;
 
+            Dictionary<string, string> dictionaryData = new Dictionary<string, string>();
+            dictionaryData.Add("jeden", "1");
+
+            pd_api.Models.DbModel.Dictionary dictionary = new pd_api.Models.DbModel.Dictionary
+            {
+                Name = name,
+                DictionaryData = dictionaryData,
+                UserCreateId = currentUser,
+                CreateDate = currentDate
+            };
+            context.Dictionaries.Add(dictionary);
+            context.SaveChangesAsync();
+            return Created("/Dictionary", name);
+        }
     }
 }

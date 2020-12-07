@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using pd_api.Models.DbModel;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +12,6 @@ namespace pd_api.Controllers.AccountControllers
     public class RoleController : Controller
     {
         private RoleManager<AppRole> roleManager;
-        private ControllerErrorHandler handler = new ControllerErrorHandler();
 
         public RoleController(RoleManager<AppRole> roleMgr)
         {
@@ -21,73 +21,59 @@ namespace pd_api.Controllers.AccountControllers
         [HttpGet("Roles")]
         public IActionResult GetRoles()
         {
-            IQueryable<AppRole> roles = roleManager.Roles;
-            if (roles.Any())
+            IList<string> roles = null;
+            if (roleManager.Roles.Any())
             {
-                return Ok(roles);
+                roles = new List<string>();
+                foreach (var role in roleManager.Roles)
+                {
+                    roles.Add(role.Name);
+                }
             }
-            return Ok(new string[0]);
+            return Ok(roles);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetRole(string name)
         {
-            try
+            AppRole role = null;
+            if (roleManager.Roles.Any())
             {
-                AppRole role = await roleManager.FindByNameAsync(name);
-                if (role != null)
-                {
-                    return Ok(role);
-                }
+                role = await roleManager.FindByNameAsync(name);
             }
-            catch (Exception ex)
-            {
-                return Json(ex);
-            }
-            return NotFound(String.Format(MessageInfo.Error_NotFound, name));
+            return Ok(role.Name);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateRole(string name)
         {
-            AppRole role = new AppRole
+            if (!string.IsNullOrEmpty(name))
             {
-                Name = name
-            };
-
-            IdentityResult result = await roleManager.CreateAsync(role);
-            if (result.Succeeded)
-            {
-                return Created("", role);
+                AppRole role = new AppRole
+                {
+                    Name = name
+                };
+                await roleManager.CreateAsync(role);
+                return Created("/Role", role);
             }
-            else
-            {
-                return handler.IdentityResultError(result);
-            }
+            return ValidationProblem("Name value is empty");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteRole(string name)
         {
-            IdentityResult result;
-            AppRole role = await roleManager.FindByNameAsync(name);
-            try
+            if (!string.IsNullOrEmpty(name))
             {
-                result =  await roleManager.DeleteAsync(role);
+                IdentityResult result = null;
+                AppRole role = await roleManager.FindByNameAsync(name);
+                if (role != null)
+                {
+                    result = await roleManager.DeleteAsync(role);
+                    return Ok();
+                }
+                return Ok(role);
             }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            if (result.Succeeded)
-            {
-                return Ok(null);
-            }
-            else
-            {
-                return handler.IdentityResultError(result);
-            }
+            return ValidationProblem("Name value is empty");
         }
     }
 }
