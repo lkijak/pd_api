@@ -36,7 +36,9 @@ namespace pd_api.Models
         public virtual DbSet<EmailConfiguration> EmailConfigurations { get; set; }
         public virtual DbSet<Dictionary> Dictionaries { get; set; }
         public virtual DbSet<Survey> Surveys { get; set; }
-        public virtual DbSet<Question> Questions { get; set; }
-        public virtual DbSet<OferedAnswer> OferedAnswers { get; set; }
+        public virtual DbSet<SurveyQuestion> SurveyQuestions { get; set; }
+        public virtual DbSet<SurveyOferedAnswer> SurveyOferedAnswers { get; set; }
+        public virtual DbSet<UserResponse> UserResponses { get; set; }
+        public virtual DbSet<UserResponseQuestionAndAnswer> UserResponseQuestionsAndAnswers { get; set; }
     }
 }

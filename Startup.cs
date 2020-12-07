@@ -7,8 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using pd_api.Models;
-using pd_api.Models.User;
-using pd_api.Service;
+using pd_api.Models.DbModel;
 
 namespace pd_api
 {

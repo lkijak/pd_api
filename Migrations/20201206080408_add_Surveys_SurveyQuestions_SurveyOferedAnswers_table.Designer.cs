@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pd_api.Models;
 
 namespace pd_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201206080408_add_Surveys_SurveyQuestions_SurveyOferedAnswers_table")]
+    partial class add_Surveys_SurveyQuestions_SurveyOferedAnswers_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -423,75 +425,6 @@ namespace pd_api.Migrations
                     b.ToTable("SurveyQuestions");
                 });
 
-            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SurveyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SurveyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserResponses");
-                });
-
-            modelBuilder.Entity("pd_api.Models.DbModel.UserResponseQuestionAndAnswer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("AnswerText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ModifyDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuestionText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserModifyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserResponseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserResponseId");
-
-                    b.ToTable("UserResponseQuestionsAndAnswers");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("pd_api.Models.DbModel.AppRole", null)
@@ -565,36 +498,6 @@ namespace pd_api.Migrations
                     b.Navigation("Survey");
                 });
 
-            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
-                {
-                    b.HasOne("pd_api.Models.DbModel.Survey", "Survey")
-                        .WithMany()
-                        .HasForeignKey("SurveyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("pd_api.Models.DbModel.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Survey");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("pd_api.Models.DbModel.UserResponseQuestionAndAnswer", b =>
-                {
-                    b.HasOne("pd_api.Models.DbModel.UserResponse", "UserResponse")
-                        .WithMany("UserResponseQuestionsAndAnswers")
-                        .HasForeignKey("UserResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserResponse");
-                });
-
             modelBuilder.Entity("pd_api.Models.DbModel.Survey", b =>
                 {
                     b.Navigation("Questions");
@@ -603,11 +506,6 @@ namespace pd_api.Migrations
             modelBuilder.Entity("pd_api.Models.DbModel.SurveyQuestion", b =>
                 {
                     b.Navigation("OferedAnswers");
-                });
-
-            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
-                {
-                    b.Navigation("UserResponseQuestionsAndAnswers");
                 });
 #pragma warning restore 612, 618
         }

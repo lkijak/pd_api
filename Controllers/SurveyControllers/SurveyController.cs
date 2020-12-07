@@ -27,31 +27,32 @@ namespace pd_api.Controllers.SurveyControllers
         [HttpGet("Surveys")]
         public async Task<IActionResult> GetAllSurvey()
         {
-            var surveys = await context.Surveys
+            List<Survey> surveys = await context.Surveys
                 .Where(s => s.Id != 0)
                 .Include(q => q.Questions)
                 .ThenInclude(a => a.OferedAnswers)
                 .ToListAsync();
 
-            if (surveys != null)
+            IList<SurveyViewModel> surveysList = null;
+            if (surveys.Any())
             {
-                IList<SurveyViewModel> surveysList = new List<SurveyViewModel>();
+                surveysList = new List<SurveyViewModel>();
                 foreach (var survey in surveys)
                 {
-                    List<QuestionViewModel> questionList = new List<QuestionViewModel>();
+                    IList<SurveyQuestionViewModel> questionList = new List<SurveyQuestionViewModel>();
                     foreach (var question in survey.Questions)
                     {
-                        List<OferedAnswerViewModel> oferedAnswerList = new List<OferedAnswerViewModel>();
+                        IList<SurveyOferedAnswerViewModel> oferedAnswerList = new List<SurveyOferedAnswerViewModel>();
                         foreach (var answer in question.OferedAnswers)
                         {
-                            OferedAnswerViewModel oferedAnswerView = new OferedAnswerViewModel
+                            SurveyOferedAnswerViewModel oferedAnswerView = new SurveyOferedAnswerViewModel
                             {
                                 Text = answer.Text
                             };
                             oferedAnswerList.Add(oferedAnswerView);
                         }
 
-                        QuestionViewModel questionView = new QuestionViewModel
+                        SurveyQuestionViewModel questionView = new SurveyQuestionViewModel
                         {
                             Text = question.Text,
                             OferedAnswers = oferedAnswerList
@@ -61,42 +62,42 @@ namespace pd_api.Controllers.SurveyControllers
 
                     SurveyViewModel surveyView = new SurveyViewModel
                     {
+                        SurveyId = survey.Id,
                         Name = survey.Name,
                         Description = survey.Description,
                         Questions = questionList
                     };
                     surveysList.Add(surveyView);
                 }
-                return Ok(surveysList);
             }
-            return Ok(null);
+            return Ok(surveysList);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSurvey(string name)
+        public IActionResult GetSurvey(string name)
         {
-            var survey = await context.Surveys
-                .Where(s => s.Name == name)
+            var survey = context.Surveys
                 .Include(q => q.Questions)
                 .ThenInclude(a => a.OferedAnswers)
-                .ToListAsync();
+                .FirstOrDefault(s => s.Name == name);
 
+            SurveyViewModel surveyView = null;
             if (survey != null)
             {
-                List<QuestionViewModel> questionList = new List<QuestionViewModel>();
-                foreach (var question in survey[0].Questions)
+                IList<SurveyQuestionViewModel> questionList = new List<SurveyQuestionViewModel>();
+                foreach (var question in survey.Questions)
                 {
-                    List<OferedAnswerViewModel> oferedAnswersList = new List<OferedAnswerViewModel>();
+                    IList<SurveyOferedAnswerViewModel> oferedAnswersList = new List<SurveyOferedAnswerViewModel>();
                     foreach (var oferedAnswer in question.OferedAnswers)
                     {
-                        OferedAnswerViewModel oferedAnswerView = new OferedAnswerViewModel
+                        SurveyOferedAnswerViewModel oferedAnswerView = new SurveyOferedAnswerViewModel
                         {
                             Text = oferedAnswer.Text
                         };
                         oferedAnswersList.Add(oferedAnswerView);
                     }
 
-                    QuestionViewModel questionView = new QuestionViewModel
+                    SurveyQuestionViewModel questionView = new SurveyQuestionViewModel
                     {
                         Text = question.Text,
                         OferedAnswers = oferedAnswersList
@@ -104,42 +105,44 @@ namespace pd_api.Controllers.SurveyControllers
                     questionList.Add(questionView);
                 }
 
-                SurveyViewModel surveyView = new SurveyViewModel
+                surveyView = new SurveyViewModel
                 {
-                    Name = survey[0].Name,
-                    Description = survey[0].Description,
+                    SurveyId = survey.Id,
+                    Name = survey.Name,
+                    Description = survey.Description,
                     Questions = questionList
                 };
-                return Ok(surveyView);
             }
-            return Ok(null);
-
+            return Ok(surveyView);
         }
 
         [HttpPost]
-        public IActionResult CreateSurvey([FromBody] SurveyViewModel model)
+        public async Task<IActionResult> CreateSurvey([FromBody] SurveyViewModel model)
         {
-            Survey surveyModel = null;
-            if (model != null)
+            Survey survey = null;
+            if (ModelState.IsValid)
             {
                 var currentUserId = 123; //int.Parse(userManager.GetUserId(this.User));  //********* Odkomentować !!! **************************************************************
                 var createDateTime = DateTime.Now;
-                IList<Question> questions = new List<Question>();
+                IList<SurveyQuestion> questions = new List<SurveyQuestion>();
                 foreach (var question in model.Questions)
                 {
-                    IList<OferedAnswer> oferedAnswers = new List<OferedAnswer>();
-                    foreach (var answer in question.OferedAnswers)
+                    IList<SurveyOferedAnswer> oferedAnswers = new List<SurveyOferedAnswer>();
+                    if (question.OferedAnswers != null)
                     {
-                        OferedAnswer oferedAnswerModel = new OferedAnswer
+                        foreach (var answer in question.OferedAnswers)
                         {
-                            UserCreateId = currentUserId,
-                            CreateDate = createDateTime,
-                            Text = answer.Text
-                        };
-                        oferedAnswers.Add(oferedAnswerModel);
+                            SurveyOferedAnswer oferedAnswerModel = new SurveyOferedAnswer
+                            {
+                                UserCreateId = currentUserId,
+                                CreateDate = createDateTime,
+                                Text = answer.Text
+                            };
+                            oferedAnswers.Add(oferedAnswerModel);
+                        }
                     }
-
-                    Question questionModel = new Question
+                    
+                    SurveyQuestion questionModel = new SurveyQuestion
                     {
                         UserCreateId = currentUserId,
                         CreateDate = createDateTime,
@@ -149,7 +152,7 @@ namespace pd_api.Controllers.SurveyControllers
                     questions.Add(questionModel);
                 }
 
-                surveyModel = new Survey
+                survey = new Survey
                 {
                     UserCreateId = currentUserId,
                     CreateDate = createDateTime,
@@ -157,28 +160,92 @@ namespace pd_api.Controllers.SurveyControllers
                     Description = model.Description,
                     Questions = questions
                 };
-            }
 
-            try
-            {
-                if (surveyModel != null)
+                try
                 {
-                    context.Surveys.Add(surveyModel);
-                    context.SaveChanges();
-                    return Ok();
+                    context.Surveys.Add(survey);
+                    await context.SaveChangesAsync();
+                    return Created("/Survey/UserResponse", model);
                 }
-                return NotFound();
+                catch (Exception)
+                {
+                    throw;
+                }
             }
-            catch (Exception ex)
+            return ValidationProblem(ModelState);
+        }
+
+        [HttpGet("UserResponse")]
+        public IActionResult GetUserResponse(string surveyName, int userId)
+        {
+            UserResponse userResponse = context.UserResponses
+                .Include(a => a.UserResponseQuestionsAndAnswers)
+                .FirstOrDefault(s => s.Survey.Name == surveyName && s.UserId == userId);
+
+            if (userResponse != null)
             {
-                return Ok(ex.ToString());
+                IList<UserResponseQuestionAndAnswerViewModel> questionsAnswersList =
+                    new List<UserResponseQuestionAndAnswerViewModel>();
+                foreach (var questionAnswer in userResponse.UserResponseQuestionsAndAnswers)
+                {
+                    UserResponseQuestionAndAnswerViewModel qa = new UserResponseQuestionAndAnswerViewModel
+                    {
+                        QuestionText = questionAnswer.QuestionText,
+                        AnswerText = questionAnswer.AnswerText
+                    };
+                    questionsAnswersList.Add(qa);
+                }
+                UserResponseViewModel viewModel = new UserResponseViewModel
+                {
+                    UserResponseQuestionAndAnswerViewModels = questionsAnswersList
+                };
             }
+            return Ok(userResponse);
         }
 
         [HttpPost("UserResponse")]
-        public IActionResult UserResponse(string model)
+        public async Task<IActionResult> CreateUserResponse([FromBody] UserResponseViewModel viewModel)
         {
-            return Ok(model);
+            UserResponse userResponse = null;
+            if (ModelState.IsValid)
+            {
+                var currentUserId = 123; //int.Parse(userManager.GetUserId(this.User));  //********* Odkomentować !!! **************************************************************
+                var createDateTime = DateTime.Now;
+
+                IList<UserResponseQuestionAndAnswer> questionAnswerList = new List<UserResponseQuestionAndAnswer>();
+                foreach (var questionAnswer in viewModel.UserResponseQuestionAndAnswerViewModels)
+                {
+                    UserResponseQuestionAndAnswer userResponseQuestionAndAnswer = new UserResponseQuestionAndAnswer
+                    {
+                        UserCreateId = currentUserId,
+                        CreateDate = createDateTime,
+                        QuestionText = questionAnswer.QuestionText,
+                        AnswerText = questionAnswer.AnswerText
+                    };
+                    questionAnswerList.Add(userResponseQuestionAndAnswer);
+                }
+
+                userResponse = new UserResponse
+                {
+                    UserCreateId = currentUserId,
+                    CreateDate = createDateTime,
+                    UserId = currentUserId,
+                    SurveyId = viewModel.SurveyId,
+                    UserResponseQuestionsAndAnswers = questionAnswerList
+                };
+
+                try
+                {
+                    context.UserResponses.Add(userResponse);
+                    await context.SaveChangesAsync();
+                    return Created("/Survey/UserResponse", viewModel);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return ValidationProblem(ModelState);
         }
     }
 }
