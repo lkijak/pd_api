@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using pd_api.Models;
 using pd_api.Models.DbModel;
-using System;
+using pd_api.Models.ViewModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,70 +19,62 @@ namespace pd_api.Controllers.EmailControllers
         }
 
         [HttpGet]
-        public JsonResult GetConfiguration()
+        public IActionResult GetConfiguration()
         {
-            try
+            EmailConfigurationViewModel model = null;
+            if (context.EmailConfigurations.Any())
             {
-                EmailConfiguration model = context.EmailConfigurations.First();
-                return Json(model);
+                EmailConfiguration getModel = context.EmailConfigurations.FirstOrDefault();
+
+                var config = new MapperConfiguration(config => config.CreateMap<EmailConfiguration, EmailConfigurationViewModel>());
+                var mapper = new Mapper(config);
+                model = mapper.Map<EmailConfigurationViewModel>(getModel);
             }
-            catch (Exception ex)
-            {
-                return Json(new { succeeded = false, messageInfo = ex.ToString() });
-            }
+            return Ok(model);
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateConfiguration([FromBody] EmailConfiguration configurationData)
+        public async Task<IActionResult> CreateConfiguration([FromBody] EmailConfigurationViewModel configurationData)
         {
-            if (context.EmailConfigurations == null)
-            {
-                return Json(new { succeeded = false, messageInfo = MessageInfo.Email_ConfigurationRecordAlreadyExist });
-            }
             if (ModelState.IsValid)
             {
-                try
+                if (context.EmailConfigurations.Any())
                 {
-                    await context.EmailConfigurations.AddAsync(configurationData);
-                    await context.SaveChangesAsync();
-                    return Json(new { succeeded = true });
+                    return Conflict("Configuration data already exists");
                 }
-                catch (Exception ex)
-                {
-                    return Json(new { exception = ex.ToString() });
-                }
+
+                var config = new MapperConfiguration(config => config.CreateMap<EmailConfigurationViewModel, EmailConfiguration>());
+                var mapper = new Mapper(config);
+                EmailConfiguration emailConfiguration = mapper.Map<EmailConfiguration>(configurationData);
+
+                await context.EmailConfigurations.AddAsync(emailConfiguration);
+                await context.SaveChangesAsync();
+                return Created("/EmailConfiguration", configurationData);
             }
-            else
-            {
-                return Json(ModelState);
-            }
+            return ValidationProblem(ModelState);
         }
 
         [HttpPatch]
-        public JsonResult EditConfiguration([FromBody] EmailConfiguration configurationData)
+        public async Task<IActionResult> EditConfiguration([FromBody] EmailConfigurationViewModel configurationData)
         {
-            EmailConfiguration emeilConfig = context.EmailConfigurations.FirstOrDefault();
-            if (emeilConfig != null)
+            if (ModelState.IsValid)
             {
-                emeilConfig.FriendlyName = configurationData.FriendlyName;
-                emeilConfig.Login = configurationData.Login;
-                emeilConfig.Password = configurationData.Password;
-                emeilConfig.UseDefaultCredential = configurationData.UseDefaultCredential;
-                emeilConfig.Host = configurationData.Host;
-                emeilConfig.Port = configurationData.Port;
-                emeilConfig.EnableSSL = configurationData.EnableSSL;
-                emeilConfig.DefaultMessageBody = configurationData.DefaultMessageBody;
-                try
+                EmailConfiguration emailConfig = null;
+                if (context.EmailConfigurations.Any())
                 {
-                    context.EmailConfigurations.Update(emeilConfig);
-                    return Json(new { succeeded = true });
+                    emailConfig = context.EmailConfigurations.FirstOrDefault();
+
+                    var config = new MapperConfiguration(config => config.CreateMap<EmailConfigurationViewModel, EmailConfiguration>());
+                    var mapper = new Mapper(config);
+                    EmailConfiguration newEmailConfiguration = mapper.Map<EmailConfiguration>(configurationData);
+
+                    emailConfig = newEmailConfiguration;
+                    context.EmailConfigurations.Update(emailConfig);
+                    await context.SaveChangesAsync();
                 }
-                catch (Exception ex)
-                {
-                    return Json(new { exception = ex.ToString() });
-                }
+                return Ok(configurationData);
             }
-            return Json(new { succeeded = false, messageInfo = MessageInfo.Email_CouldNotFindConfiguration });
+            return ValidationProblem(ModelState);
         }
     }
 }
