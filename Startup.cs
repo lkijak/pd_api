@@ -33,14 +33,15 @@ namespace pd_api
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
-            services.AddAuthentication()
-                .AddGoogle(options =>
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
                 {
-                    options.ClientId = "850157239961-g16l5ifn3btccslaogvpicf7umrbrubd.apps.googleusercontent.com";
-                    options.ClientSecret = "UQKekGT5LPtT5VmmOUe5w-VM";
-                    options.SignInScheme = IdentityConstants.ExternalScheme;
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
-
+            });
             services.AddControllers();
 
             services.AddSwaggerGen(info =>
@@ -70,12 +71,14 @@ namespace pd_api
             });
 
             app.UseRouting();
+            app.UseCors();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllers();
             });
 
-            app.UseAuthentication();
+            
         }
     }
 }

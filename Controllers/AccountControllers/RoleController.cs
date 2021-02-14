@@ -35,6 +35,11 @@ namespace pd_api.Controllers.AccountControllers
         [HttpGet]
         public async Task<IActionResult> GetRole(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return ValidationProblem(MessageInfo.Role_DidintPassRoleName);
+            }
+
             AppRole role = null;
             if (roleManager.Roles.Any())
             {
@@ -46,33 +51,35 @@ namespace pd_api.Controllers.AccountControllers
         [HttpPost]
         public async Task<IActionResult> CreateRole(string name)
         {
-            if (!string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
-                AppRole role = new AppRole
-                {
-                    Name = name
-                };
-                await roleManager.CreateAsync(role);
-                return Created("/Role", role);
+                return ValidationProblem(MessageInfo.Role_DidintPassRoleName);
             }
-            return ValidationProblem("Name value is empty");
+
+            AppRole role = new AppRole
+            {
+                Name = name
+            };
+            await roleManager.CreateAsync(role);
+            return Created("/Role", role);
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteRole(string name)
         {
-            if (!string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
-                IdentityResult result = null;
-                AppRole role = await roleManager.FindByNameAsync(name);
-                if (role != null)
-                {
-                    result = await roleManager.DeleteAsync(role);
-                    return Ok();
-                }
-                return Ok(role);
+                return ValidationProblem(MessageInfo.Role_DidintPassRoleName);
             }
-            return ValidationProblem("Name value is empty");
+
+            AppRole role = await roleManager.FindByNameAsync(name);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            IdentityResult result = await roleManager.DeleteAsync(role);
+            return Ok(result);
         }
     }
 }

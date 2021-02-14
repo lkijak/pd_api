@@ -6,8 +6,12 @@ namespace pd_api.Models.ViewModel
 {
     public class UserResponseViewModel
     {
-        [Required, Range(1, int.MaxValue, ErrorMessage = "The value must be greater than zero")]
-        public int SurveyId { get; set; }
+        [Required]
+        public string SurveyName { get; set; }
+
+        [Required]
+        public string UserName { get; set; }
+        public DateTime DateCompleting { get; set; }
 
         [Required, MinLength(1)]
         public IList<UserResponseQuestionAndAnswerViewModel> UserResponseQuestionAndAnswerViewModels { get; set; }
@@ -20,5 +24,8 @@ namespace pd_api.Models.ViewModel
 
         [Required]
         public string AnswerText { get; set; }
+
+        [Required]
+        public int QuestionNo { get; set; }
     }
 }

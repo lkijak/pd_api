@@ -4,8 +4,7 @@ namespace pd_api.Models.DbModel
 {
     public class UserResponse : BaseModel
     {
-        public int SurveyId { get; set; }
-        public Survey Survey { get; set; }
+        public string SurveyName { get; set; }
         public int UserId { get; set; }
         public AppUser User { get; set; }
 
@@ -14,6 +13,7 @@ namespace pd_api.Models.DbModel
 
     public class UserResponseQuestionAndAnswer : BaseModel
     {
+        public int QuestionNo { get; set; }
         public string QuestionText { get; set; }
         public string AnswerText { get; set; }
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace pd_api.Migrations
 {
-    public partial class add_Identity_table : Migration
+    public partial class add_Identity_tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

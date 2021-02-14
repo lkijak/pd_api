@@ -142,7 +142,7 @@ namespace pd_api {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Błąd z dupy dla google..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Błąd dla google..
         /// </summary>
         public static string Login_GoogleAccountDontExist {
             get {
@@ -151,7 +151,7 @@ namespace pd_api {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Błąd z dupa dla microsoft..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Błąd dla microsoft..
         /// </summary>
         public static string Login_MicrosoftAccountDontExist {
             get {
@@ -169,6 +169,15 @@ namespace pd_api {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie podano nazwy roli..
+        /// </summary>
+        public static string Role_DidintPassRoleName {
+            get {
+                return ResourceManager.GetString("Role_DidintPassRoleName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Uzytkownik.
         /// </summary>
         public static string Role_User {
@@ -178,7 +187,16 @@ namespace pd_api {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono użytkownika..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Life_Circle.
+        /// </summary>
+        public static string Survey_LifeCircle {
+            get {
+                return ResourceManager.GetString("Survey_LifeCircle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nie znaleziono użytkownika: .
         /// </summary>
         public static string User_CouldNotFindUser {
             get {
@@ -201,6 +219,15 @@ namespace pd_api {
         public static string User_WrongPassword {
             get {
                 return ResourceManager.GetString("User_WrongPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nieprawidłowe dane..
+        /// </summary>
+        public static string UserResponse_WrongData {
+            get {
+                return ResourceManager.GetString("UserResponse_WrongData", resourceCulture);
             }
         }
     }

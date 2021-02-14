@@ -3,18 +3,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace pd_api.Migrations
 {
-    public partial class add_Dictionaries_table : Migration
+    public partial class add_EmailConfigurations_table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Dictionaries",
+                name: "EmailConfigurations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DictionaryData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FriendlyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Login = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UseDefaultCredential = table.Column<bool>(type: "bit", nullable: false),
+                    Host = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    EnableSSL = table.Column<bool>(type: "bit", nullable: false),
+                    DefaultMessageBody = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserCreateId = table.Column<int>(type: "int", nullable: false),
@@ -22,19 +28,14 @@ namespace pd_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dictionaries", x => x.Id);
+                    table.PrimaryKey("PK_EmailConfigurations", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "Dictionaries_Index_Name",
-                table: "Dictionaries",
-                column: "Name");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Dictionaries");
+                name: "EmailConfigurations");
         }
     }
 }

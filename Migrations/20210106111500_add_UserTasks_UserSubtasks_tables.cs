@@ -3,17 +3,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace pd_api.Migrations
 {
-    public partial class add_UserResponses_UserResponseQuestionsAndAnswers_table : Migration
+    public partial class add_UserTasks_UserSubtasks_tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "UserResponses",
+                name: "UserTasks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SurveyId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    TaskStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TaskEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -22,30 +25,26 @@ namespace pd_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserResponses", x => x.Id);
+                    table.PrimaryKey("PK_UserTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserResponses_AspNetUsers_UserId",
+                        name: "FK_UserTasks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserResponses_Surveys_SurveyId",
-                        column: x => x.SurveyId,
-                        principalTable: "Surveys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserResponseQuestionsAndAnswers",
+                name: "UserSubtasks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AnswerText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserResponseId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    TaskStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TaskEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserTaskId = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifyDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserCreateId = table.Column<int>(type: "int", nullable: false),
@@ -53,38 +52,33 @@ namespace pd_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserResponseQuestionsAndAnswers", x => x.Id);
+                    table.PrimaryKey("PK_UserSubtasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserResponseQuestionsAndAnswers_UserResponses_UserResponseId",
-                        column: x => x.UserResponseId,
-                        principalTable: "UserResponses",
+                        name: "FK_UserSubtasks_UserTasks_UserTaskId",
+                        column: x => x.UserTaskId,
+                        principalTable: "UserTasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserResponseQuestionsAndAnswers_UserResponseId",
-                table: "UserResponseQuestionsAndAnswers",
-                column: "UserResponseId");
+                name: "IX_UserSubtasks_UserTaskId",
+                table: "UserSubtasks",
+                column: "UserTaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserResponses_SurveyId",
-                table: "UserResponses",
-                column: "SurveyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserResponses_UserId",
-                table: "UserResponses",
+                name: "IX_UserTasks_UserId",
+                table: "UserTasks",
                 column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "UserResponseQuestionsAndAnswers");
+                name: "UserSubtasks");
 
             migrationBuilder.DropTable(
-                name: "UserResponses");
+                name: "UserTasks");
         }
     }
 }

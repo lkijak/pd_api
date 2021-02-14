@@ -10,8 +10,8 @@ using pd_api.Models;
 namespace pd_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201204191704_add_Dictionaries_table")]
-    partial class add_Dictionaries_table
+    [Migration("20210208184211_add_questionsNo")]
+    partial class add_questionsNo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace pd_api.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -122,7 +122,36 @@ namespace pd_api.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("pd_api.Models.AppUser", b =>
+            modelBuilder.Entity("pd_api.Models.DbModel.AppRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -216,7 +245,7 @@ namespace pd_api.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("pd_api.Models.Dictionary.Dictionary", b =>
+            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,16 +255,16 @@ namespace pd_api.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DictionaryData")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ModifyDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("SurveyName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserCreateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserModifyId")
@@ -243,13 +272,50 @@ namespace pd_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .HasDatabaseName("Dictionaries_Index_Name");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Dictionaries");
+                    b.ToTable("UserResponses");
                 });
 
-            modelBuilder.Entity("pd_api.Models.Email.EmailConfiguration", b =>
+            modelBuilder.Entity("pd_api.Models.DbModel.UserResponseQuestionAndAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("AnswerText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("QuestionNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuestionText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserCreateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserModifyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserResponseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserResponseId");
+
+                    b.ToTable("UserResponseQuestionsAndAnswers");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserSubtask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,32 +325,20 @@ namespace pd_api.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DefaultMessageBody")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EnableSSL")
+                    b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FriendlyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifyDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Port")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("TaskEndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("UseDefaultCredential")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("TaskStartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserCreateId")
                         .HasColumnType("int");
@@ -292,43 +346,63 @@ namespace pd_api.Migrations
                     b.Property<int?>("UserModifyId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserTaskId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("EmailConfigurations");
+                    b.HasIndex("UserTaskId");
+
+                    b.ToTable("UserSubtasks");
                 });
 
-            modelBuilder.Entity("pd_api.Models.User.AppRole", b =>
+            modelBuilder.Entity("pd_api.Models.DbModel.UserTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifyDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                    b.Property<DateTime?>("TaskEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("TaskStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserCreateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserModifyId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("UserTasks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("pd_api.Models.User.AppRole", null)
+                    b.HasOne("pd_api.Models.DbModel.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -337,7 +411,7 @@ namespace pd_api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("pd_api.Models.AppUser", null)
+                    b.HasOne("pd_api.Models.DbModel.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -346,7 +420,7 @@ namespace pd_api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("pd_api.Models.AppUser", null)
+                    b.HasOne("pd_api.Models.DbModel.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -355,13 +429,13 @@ namespace pd_api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("pd_api.Models.User.AppRole", null)
+                    b.HasOne("pd_api.Models.DbModel.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("pd_api.Models.AppUser", null)
+                    b.HasOne("pd_api.Models.DbModel.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,11 +444,65 @@ namespace pd_api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("pd_api.Models.AppUser", null)
+                    b.HasOne("pd_api.Models.DbModel.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
+                {
+                    b.HasOne("pd_api.Models.DbModel.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserResponseQuestionAndAnswer", b =>
+                {
+                    b.HasOne("pd_api.Models.DbModel.UserResponse", "UserResponse")
+                        .WithMany("UserResponseQuestionsAndAnswers")
+                        .HasForeignKey("UserResponseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserResponse");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserSubtask", b =>
+                {
+                    b.HasOne("pd_api.Models.DbModel.UserTask", "UserTask")
+                        .WithMany("Subtasks")
+                        .HasForeignKey("UserTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserTask");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserTask", b =>
+                {
+                    b.HasOne("pd_api.Models.DbModel.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserResponse", b =>
+                {
+                    b.Navigation("UserResponseQuestionsAndAnswers");
+                });
+
+            modelBuilder.Entity("pd_api.Models.DbModel.UserTask", b =>
+                {
+                    b.Navigation("Subtasks");
                 });
 #pragma warning restore 612, 618
         }

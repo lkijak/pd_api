@@ -145,19 +145,28 @@
     <value>Nie potwierdzono adresu e-mail.</value>
   </data>
   <data name="Login_GoogleAccountDontExist" xml:space="preserve">
-    <value>Błąd z dupy dla google.</value>
+    <value>Błąd dla google.</value>
   </data>
   <data name="Login_MicrosoftAccountDontExist" xml:space="preserve">
-    <value>Błąd z dupa dla microsoft.</value>
+    <value>Błąd dla microsoft.</value>
   </data>
   <data name="Role_Administrator" xml:space="preserve">
     <value>Administrator</value>
   </data>
+  <data name="Role_DidintPassRoleName" xml:space="preserve">
+    <value>Nie podano nazwy roli.</value>
+  </data>
   <data name="Role_User" xml:space="preserve">
     <value>Uzytkownik</value>
   </data>
+  <data name="Survey_LifeCircle" xml:space="preserve">
+    <value>Life_Circle</value>
+  </data>
+  <data name="UserResponse_WrongData" xml:space="preserve">
+    <value>Nieprawidłowe dane.</value>
+  </data>
   <data name="User_CouldNotFindUser" xml:space="preserve">
-    <value>Nie znaleziono użytkownika.</value>
+    <value>Nie znaleziono użytkownika: </value>
   </data>
   <data name="User_DidntPassUserName" xml:space="preserve">
     <value>Nie przekazano nazwy użytkownika.</value>

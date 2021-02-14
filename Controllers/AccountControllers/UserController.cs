@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using pd_api.Models;
 using pd_api.Models.DbModel;
 using pd_api.Models.ViewModel;
 using System.Linq;
@@ -9,33 +10,31 @@ using System.Threading.Tasks;
 
 namespace pd_api.Controllers.AccountControllers
 {
-    [Route("User")]
+    [Route("[controller]")]
     public class UserController : Controller
     {
         private UserManager<AppUser> userManager;
-        private SignInManager<AppUser> signInManager;
-        private IUserValidator<AppUser> userValidator;
-        private IPasswordHasher<AppUser> passwordHasher;
-        private IConfiguration configuration;
+        private AppDbContext context; 
 
         public UserController(UserManager<AppUser> userMgr,
             SignInManager<AppUser> signMgr,
             IConfiguration config,
             IUserValidator<AppUser> userValid,
-            IPasswordHasher<AppUser> passwordHash)
+            IPasswordHasher<AppUser> passwordHash,
+            AppDbContext ctx)
         {
             userManager = userMgr;
-            signInManager = signMgr;
-            configuration = config;
-            userValidator = userValid;
-            passwordHasher = passwordHash;
+            context = ctx;
         }
 
         [HttpGet("Users")]
-        public JsonResult GetAllUsers()
+        public IActionResult GetAllUsers()
         {
-            var users = from u in userManager.Users
-                        select new
+            IQueryable<UserAccountViewModel> users = null;
+            if (userManager.Users.Any())
+            {
+                users = from u in userManager.Users
+                        select new UserAccountViewModel
                         {
                             UserName = u.UserName,
                             Email = u.Email,
@@ -45,145 +44,82 @@ namespace pd_api.Controllers.AccountControllers
                             City = u.City,
                             Address = u.Address
                         };
-
-            if (users != null)
-            {
-                return Json(users);
             }
-            return Json(null);
+            return Ok(users);
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetUser(string userName)
+        public async Task<IActionResult> GetUser(string userName)
         {
-            if (!string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userName))
             {
-                AppUser user = await userManager.FindByNameAsync(userName);
-                if (user != null)
-                {
-                    var config = new MapperConfiguration(config => config.CreateMap<AppUser, UserAccountViewModel>());
-                    var mapper = new Mapper(config);
-                    UserAccountViewModel showAccount = mapper.Map<UserAccountViewModel>(user);
-                    var roles = await userManager.GetRolesAsync(user);
-                    showAccount.Role = roles;
-                    return Json(showAccount);
-                }
-                else
-                {
-                    return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
-                }
+                return ValidationProblem(MessageInfo.User_DidntPassUserName);
+            }
+
+            AppUser user = await userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var config = new MapperConfiguration(config => config.CreateMap<AppUser, UserAccountViewModel>());
+            var mapper = new Mapper(config);
+            UserAccountViewModel showAccount = mapper.Map<UserAccountViewModel>(user);
+            var survey = context.UserResponses.FirstOrDefault(r => r.SurveyName == MessageInfo.Survey_LifeCircle && r.UserId == user.Id);
+            if (survey != null)
+            {
+                showAccount.IsLifeCircleFilled = true;
             }
             else
             {
-                return Json(new { succeeded = false, messageInfo = MessageInfo.User_DidntPassUserName });
+                showAccount.IsLifeCircleFilled = false;
             }
+            var roles = await userManager.GetRolesAsync(user);
+            showAccount.Role = roles;
+            return Ok(showAccount);
         }
 
         [HttpPost]
-        public async Task<JsonResult> CreateUser([FromBody] RegistrationViewModel registrationData)
+        public async Task<IActionResult> CreateUser([FromBody] RegistrationViewModel registrationData)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                AppUser user = new AppUser
-                {
-                    UserName = registrationData.UserName,
-                    Email = registrationData.Email
-                };
-
-                IdentityResult createResult = await userManager.CreateAsync(user, registrationData.Password);
-                IdentityResult addToRoleResult = await userManager.AddToRoleAsync(user, MessageInfo.Role_User);
-                if (createResult.Succeeded && addToRoleResult.Succeeded)
-                {
-                    
-
-                    //tutaj dodać metodę do wysyłania email potwierdzającego adres 
-                    //i  ustawić potwierdzenie adresu w setup
-
-                    return Json(createResult);
-                }
-                else
-                {
-                    return Json(createResult);
-                }
+                return ValidationProblem(ModelState);
             }
-            return Json(ModelState);
-        }
 
-        [HttpPatch]
-        public async Task<JsonResult> EditUser([FromBody] EditUserViewModel editAccountData)
-        {
-            if (ModelState.IsValid)
+            AppUser user = new AppUser
             {
-                AppUser user = await userManager.FindByNameAsync(editAccountData.UserName);
-                if (user != null)
-                {
-                    if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, editAccountData.Password) ==
-                        PasswordVerificationResult.Failed)
-                    {
-                        return Json(new { succeeded = false, messageInfo = MessageInfo.User_WrongPassword });
-                    }
-                    else
-                    {
-                        user.Name = editAccountData.Name;
-                        user.Lastname = editAccountData.Lastname;
-                        user.PostCode = editAccountData.PostCode;
-                        user.City = editAccountData.City;
-                        user.Address = editAccountData.Address;
+                UserName = registrationData.UserName,
+                Email = registrationData.Email,
+                EmailConfirmed = true
+            };
 
-                        IdentityResult editResult = await userManager.UpdateAsync(user);
-                        if (editResult.Succeeded)
-                        {
-                            return Json(editResult);
-                        }
-                        else
-                        {
-                            return Json(editResult);
-                        }
-                    }
-                }
-                else
-                {
-                    return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
-                }
-            }
-            else
+            IdentityResult createResult = await userManager.CreateAsync(user);
+            IdentityResult addToRoleResult = await userManager.AddToRoleAsync(user, MessageInfo.Role_User);
+            if (createResult.Succeeded && addToRoleResult.Succeeded)
             {
-                return Json(ModelState);
+                return Ok(createResult);
             }
+
+            return Conflict(createResult);
         }
 
         [HttpDelete]
-        public async Task<JsonResult> DeleteUser([FromBody] LoginViewModel deleteData)
+        public async Task<IActionResult> DeleteUser(string userName)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(userName))
             {
-                AppUser user = await userManager.FindByNameAsync(deleteData.UserName);
-                if (user != null)
-                {
-                    if (passwordHasher.VerifyHashedPassword(user, user.PasswordHash, deleteData.Password) ==
-                        PasswordVerificationResult.Failed)
-                    {
-                        return Json(new { succeeded = false, messageInfo = MessageInfo.User_WrongPassword });
-                    }
-                    else
-                    {
-                        IdentityResult deleteResult = await userManager.DeleteAsync(user);
-                        if (deleteResult.Succeeded)
-                        {
-                            return Json(deleteResult);
-                        }
-                        else
-                        {
-                            return Json(deleteResult);
-                        }
-                    }
-                }
-                return Json(new { succeeded = false, messageInfo = MessageInfo.User_CouldNotFindUser });
+                return ValidationProblem(MessageInfo.User_DidntPassUserName);
             }
-            else
+
+            AppUser user = await userManager.FindByNameAsync(userName);
+            if (user == null)
             {
-                return Json(ModelState);
+                return NotFound();
             }
+                
+            IdentityResult deleteResult = await userManager.DeleteAsync(user);
+            return Ok(deleteResult);
         }
     }
 }
